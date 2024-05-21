@@ -2,22 +2,18 @@ from wtforms import IntegerField, StringField, TextAreaField
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import BaseForm
 from flask_login import current_user
-from werkzeug.security import generate_password_hash 
+#from werkzeug.security import generate_password_hash 
 from uuid import uuid4
 
 from . import admin_bp
-from .. import db, admin_manager
+from .. import db, admin_manager, user_manager
 from ..db_model import User, ExamList, ExamQuestions
 
 class UserView(ModelView):
     column_list = ("email", "password", "admin")
     
-    def on_model_change(self, form, model, is_created):  
-        if is_created:      
-            model.user_id = uuid4()
-            model.password = generate_password_hash(model.password, method='sha256')
-        else:
-            model.password = generate_password_hash(model.password, method='sha256')
+    def on_model_change(self, form, model, is_created):     
+        model.password = user_manager.hash_password(model.password)            
 
     def is_accessible(self):
         return current_user.is_authenticated and current_user.admin
@@ -64,6 +60,10 @@ class ExamQuestionsView(ModelView):
         "optionf": TextAreaField,
         "explanation": TextAreaField
     }
+
+    def on_model_change(self, form, model, is_created):  
+        if is_created:      
+            model.id = uuid4()
 
     def is_accessible(self):
         return current_user.is_authenticated and current_user.admin
