@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% from "navbar.html" import navbar %}
+{% from "ques_navbar.html" import ques_navbar %}
+
+{% block title %}Exam App Home{% endblock %}
+
+{% block body %}
+
+<div class="page-header">
+   <h3>{{ exam_id }}: {{ exam_desc }}</h3>
+   <h4> (Total: {{ question_count }}&nbsp;questions.)</h4>
+</div>
+<nav>
+    {% block ques_nav %}
+    {{ ques_navbar(question, question_count) }}
+    {% endblock %}       
+</nav>
+<div class="collapse" id="searchquestion">
+    <form class="d-flex" role = "search" method="POST" action="{{ url_for('browse_bp.question', exam_id=exam_id, form=question.index-1) }}">
+        <input type="search" id="ques_id" name="ques_id" class="form-control me-2" placeholder="Question index">          
+        <button class="btn btn-outline-success" type="submit">Go!</button>
+    </form>  
+</div>
+<div class="collapse" id="collapseExample"></div>  
+<br></br>
+<div class="row">
+    <div class="col-lg-12">
+        <p class="lead">    
+        {{ question.index }}. &nbsp;            
+        {{ question.question }}
+        </p>        
+        <form class="form-horizontal" method="POST" action="{{ url_for('browse_bp.question', exam_id=exam_id, question_id=question.index) }}">
+            {% if question.optiona != "" %}
+            <div class="form-check">         
+                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_a" value="a">
+                <label class="form-check-label lead" for="answer">{{ question.optiona }}</label>
+            </div><!-- /input-group -->
+            {% endif %}
+             
+            {% if question.optionb != "" %}
+            <div class="form-check">      
+                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_b" value="b">
+                <label class="form-check-label lead" for="answer">{{ question.optionb }}</label>   
+            </div><!-- /input-group -->
+            {% endif %}
+            
+            {% if question.optionc != "" %}
+            <div class="form-check">     
+                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_c" value="c">
+                <label class="form-check-label lead" for="answer">{{ question.optionc }}</label>   
+            </div><!-- /input-group -->
+            {% endif %}
+            
+            {% if question.optiond != "" %}
+            <div class="form-check">      
+                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_d" value="d">
+                <label class="form-check-label lead" for="answer">{{ question.optiond }}</label>   
+            </div><!-- /input-group -->
+            {% endif %}
+           
+            {% if question.optione != "" %}
+            <div class="form-check">      
+                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_e" value="e">
+                <label class="form-check-label lead" for="answer">{{ question.optione }}</label>   
+            </div><!-- /input-group -->
+            {% endif %}
+            
+            {% if question.optionf != "" %}
+            <div class="form-check">   
+                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_f" value="f">
+                <label class="form-check-label lead" for="answer">{{ question.optionf }}</label>   
+            </div><!-- /input-group -->
+            {% endif %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>  
+        {% if show_answer %}
+        <p class="lead">   
+        Correct Answer: &nbsp; {{ question.correct_ans }}
+        </p>
+        <p class="lead">         
+        Explanation: &nbsp; {{ question.explanation }}  
+        {% endif %}   
+        </p>
+    </div><!-- /.col-lg-12 -->
+</div>
+{% endblock %}

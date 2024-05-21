@@ -1,0 +1,18 @@
+{% macro navbar(current_user) %}
+<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    <li class="nav-item"><a class = "nav-link active" href="{{ url_for('browse_bp.index') }}">Home</a></li>
+    {% if not current_user.is_authenticated %}    
+    <li class="nav-item"><a class = "nav-link active" href="{{ url_for('user.login') }}">Login</a></li>
+    <li class="nav-item"><a class = "nav-link active" href="{{ url_for('user.register') }}">Register</a></li>
+    {% endif %}
+    {% if current_user.is_authenticated and current_user.admin  %}
+    <li class="nav-item"><a class = "nav-link active" href="admin/">Admin</a></li>
+    {% endif %}
+    {% if current_user.is_authenticated %}
+    <li class="nav-item"><a class = "nav-link active" href="{{ url_for('user.logout') }}">Logout</a></li>
+    {% endif %}
+    {% if current_user.is_authenticated %}
+    <li class="nav-item"><a class = "nav-link active" href="#">User: {{  current_user.username }}</a></li>
+    {% endif %}
+</ul>
+{% endmacro %}

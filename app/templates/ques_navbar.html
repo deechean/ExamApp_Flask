@@ -1,0 +1,20 @@
+{% macro ques_navbar(question, question_count) %}
+<ul class="pagination">
+    <li class="page-item">
+        {% if question.index <= 1 %}
+        <a class="page-link" href="#"><<</a></li>    
+        {% else %}
+        <a class="page-link" href="{{ url_for('browse_bp.question', exam_id=question.exam_id, question_id=question.index-1) }}"><<</a></li>    
+        {% endif %}
+    <li class="page-item">       
+        <a class="page-link" data-bs-toggle="collapse" href="#searchquestion">...</a></li>
+    </li>
+    <li class="page-item">
+        {% if question.index >= question_count %}
+        <a class="page-link" href="#">>></a></li>
+        {% else %}    
+        <a class="page-link" href="{{ url_for('browse_bp.question', exam_id=question.exam_id, question_id=question.index+1) }}">>></a>
+        {% endif %}
+    </li>
+</ul>
+{% endmacro %}
