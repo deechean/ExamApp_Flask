@@ -17,12 +17,23 @@ def index():
     examlist = ExamList.query.all()
     return render_template("index.html", current_user=current_user, examlist=examlist)
 
-@browse_bp.route("/questions", methods=["GET", "POST"])
-@login_required
-def question():   
 
+@browse_bp.route("/jumpto/<exam_id>", methods=["POST"])
+@login_required
+def jumpto(exam_id):
+    exam_id = exam_id
+    question_id = request.form["ques_id"]
+    return redirect(url_for("browse_bp.question", exam_id=exam_id, question_id=question_id))
+
+
+@browse_bp.route("/question", methods=["GET", "POST"])
+@login_required
+def question():
     exam_id = request.args.get("exam_id")
     question_id = request.args.get("question_id")
+
+    if request.method == "POST":  
+         question_id = request.form["ques_id"]
 
     question_count = ExamQuestions.query.filter(ExamList.exam_id==exam_id).count()   
     exam = ExamList.query.filter(ExamList.exam_id==exam_id).first()
@@ -32,23 +43,18 @@ def question():
         question = ExamQuestions.query.filter(
             ExamQuestions.exam_id==exam_id, ExamQuestions.index==int(question_id)
         ).first()
-        if question:
-            if request.method == "POST":  
-                return render_template(
-                    "question.html", 
-                    exam_id=exam_id, 
-                    exam_desc=exam_desc, 
-                    question=question, 
-                    question_count=question_count,
-                    show_answer = True
-                )  
-            else:
-                return render_template(
-                    "question.html", 
-                    exam_id=exam_id, 
-                    exam_desc=exam_desc, 
-                    question=question, 
-                    question_count=question_count, 
-                    show_answer = False
-                )
+        if question:         
+            return render_template(
+                "question.html", 
+                exam_id=exam_id, 
+                exam_desc=exam_desc, 
+                question=question, 
+                question_count=question_count,
+                show_answer = True
+            ) 
     return "<h1>The question doesn't exist.</h1>"
+
+@browse_bp.route("/savemynote", methods=["GET", "POST"])
+@login_required
+def savemynote(): 
+    pass

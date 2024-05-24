@@ -2,12 +2,12 @@ from wtforms import IntegerField, StringField, TextAreaField
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import BaseForm
 from flask_login import current_user
-#from werkzeug.security import generate_password_hash 
+ 
 from uuid import uuid4
 
 from . import admin_bp
 from .. import db, admin_manager, user_manager
-from ..db_model import User, ExamList, ExamQuestions
+from ..db_model import User, ExamList, ExamQuestions, UserNotes
 
 class UserView(ModelView):
     column_list = ("email", "password", "admin")
@@ -74,8 +74,14 @@ class ExamQuestionsView(ModelView):
         elif current_user.admin:
              return "<h1>You are not admin! </h1>"
 
+class UserNotesView(ModelView):
+
+    def on_model_change(self, form, model, is_created):  
+        if is_created:      
+            model.note_id = uuid4()
 
 admin_manager.add_view(UserView(User, db.session))
 admin_manager.add_view(ExamListView(ExamList, db.session))
 admin_manager.add_view(ExamQuestionsView(ExamQuestions, db.session))
+admin_manager.add_view(UserNotesView(UserNotes, db.session))
 
