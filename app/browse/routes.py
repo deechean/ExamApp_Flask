@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from flask import (
     render_template,
     request,
@@ -9,7 +11,7 @@ from flask import (
 from flask_user import current_user, login_required
 from . import browse_bp
 from .. import db
-from ..db_model import ExamList, ExamQuestions
+from ..db_model import ExamList, ExamQuestions, UserNotes
 
 
 @browse_bp.route("/", methods=["GET"])
@@ -43,18 +45,62 @@ def question():
         question = ExamQuestions.query.filter(
             ExamQuestions.exam_id==exam_id, ExamQuestions.index==int(question_id)
         ).first()
-        if question:         
+        if question:
+            #the question_id in UserNotes is the id of question, not index
+            usernotes = UserNotes.query.filter(
+                UserNotes.question_id==question.id,
+                UserNotes.user_id==current_user.id
+                ).first()
+            
             return render_template(
                 "question.html", 
                 exam_id=exam_id, 
                 exam_desc=exam_desc, 
                 question=question, 
                 question_count=question_count,
-                show_answer = True
+                show_answer = True, 
+                usernotes=usernotes
             ) 
     return "<h1>The question doesn't exist.</h1>"
 
-@browse_bp.route("/savemynote", methods=["GET", "POST"])
+@browse_bp.route("/savemynote", methods=["POST"])
 @login_required
-def savemynote(): 
-    pass
+def savemynote():
+    exam_id = request.args.get("exam_id")
+    question_id = request.args.get("question_id") 
+    
+    question = ExamQuestions.query.filter(
+            ExamQuestions.exam_id==exam_id, ExamQuestions.index==int(question_id)
+        ).first()
+    
+    category = request.form["category"]
+    mynotes = request.form["mynotes"]
+    if question:
+        if question.ansnum > 1: 
+            my_ans = request.form.getlist("answer")
+            my_ans_str = ""
+            for ans in my_ans:
+                my_ans_str += ans
+        else:
+            my_ans_str = request.form.get("answer")
+    my_ans_str = my_ans_str.upper()
+    usernote = UserNotes.query.filter(
+        UserNotes.question_id == question.id, UserNotes.user_id == current_user.id
+    ).first()
+
+    if usernote:
+        usernote.my_ans = my_ans_str 
+        usernote.category = category
+        usernote.notes = mynotes
+    else:
+        usernote = UserNotes(
+            note_id=uuid4(),
+            question_id=question.id, 
+            user_id=current_user.id,
+            category=category,
+            notes=mynotes,
+            my_ans = my_ans_str
+        )
+        db.session.add(usernote)
+    db.session.commit()
+    return redirect(url_for("browse_bp.question", exam_id=exam_id, question_id=question_id))

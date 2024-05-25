@@ -1,10 +1,10 @@
+from uuid import uuid4
+
 from wtforms import IntegerField, StringField, TextAreaField
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import BaseForm
 from flask_login import current_user
  
-from uuid import uuid4
-
 from . import admin_bp
 from .. import db, admin_manager, user_manager
 from ..db_model import User, ExamList, ExamQuestions, UserNotes

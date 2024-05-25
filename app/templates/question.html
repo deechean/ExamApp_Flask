@@ -24,59 +24,74 @@
 <div class="collapse" id="collapseExample"></div>  
 <div class="row">
     <div class="col-lg-12">
-        <form class="form-horizontal" method="POST" action="{{ url_for('browse_bp.savemynote', exam_id=exam_id, question_id=question_id) }}"></form>
+        <form class="form-horizontal" method="POST" action="{{ url_for('browse_bp.savemynote', exam_id=exam_id, question_id=question.index) }}">
             
             <P class="lead">   
             {{ question.index }}. &nbsp;
             {{ question.question }}
             </P>  
             <BR>   
-        
+            {% if usernotes.my_ans and 'd' in usernotes.my_ans %} checked {% endif %}
             {% if question.optiona != "" %}
             <div class="form-check">         
-                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_a" value="a">
+                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_a" value="a" {%if usernotes.my_ans and "A" in usernotes.my_ans %}checked{% endif %}>
                 <label class="form-check-label lead" for="answer">{{ question.optiona }}</label>
             </div><!-- /input-group -->
             {% endif %}
              
             {% if question.optionb != "" %}
             <div class="form-check">      
-                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_b" value="b">
+                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_b" value="b" {%if usernotes.my_ans and "B" in usernotes.my_ans %}checked{% endif %}>
                 <label class="form-check-label lead" for="answer">{{ question.optionb }}</label>   
             </div><!-- /input-group -->
             {% endif %}
             
             {% if question.optionc != "" %}
             <div class="form-check">     
-                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_c" value="c">
+                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_c" value="c" {%if usernotes.my_ans and "C" in usernotes.my_ans %}checked{% endif %}>
                 <label class="form-check-label lead" for="answer">{{ question.optionc }}</label>   
             </div><!-- /input-group -->
             {% endif %}
             
             {% if question.optiond != "" %}
             <div class="form-check">      
-                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_d" value="d">
+                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_d" value="d" {%if usernotes.my_ans and "D" in usernotes.my_ans %}checked{% endif %}>
                 <label class="form-check-label lead" for="answer">{{ question.optiond }}</label>   
             </div><!-- /input-group -->
             {% endif %}
            
             {% if question.optione != "" %}
             <div class="form-check">      
-                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_e" value="e">
+                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_e" value="e" {%if usernotes.my_ans and "E" in usernotes.my_ans %}checked{% endif %}>
                 <label class="form-check-label lead" for="answer">{{ question.optione }}</label>   
             </div><!-- /input-group -->
             {% endif %}
             
             {% if question.optionf != "" %}
             <div class="form-check">   
-                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_f" value="f">
+                <input class="form-check-input" {% if question.ansnum > 1 %} type="checkbox" {% else %} type="radio" {% endif %} name="answer" id="option_f" value="f" {%if usernotes.my_ans and "F" in usernotes.my_ans %}checked{% endif %}>
                 <label class="form-check-label lead" for="answer">{{ question.optionf }}</label>   
             </div><!-- /input-group -->
             {% endif %}
+
+            <div class="collapse" id="mynote">    
+                <div class="form-floating mb-3">                    
+                    <input id="category" name="category" class="form-control" placeholder="category" {% if usernotes %} value={{ usernotes.category }} {% endif %}>
+                    <label for="floatingInput">Question Category</label>
+                  </div>
+                  <div class="form-floating">
+                    <textarea class="form-control"id="mynotes" name="mynotes" placeholder="Leave a comment here"> {% if usernotes %} {{ usernotes.notes }} {% endif %}</textarea>
+                    <label for="floatingPassword">Study Notes</label>
+                  </div>                        
+            </div>
+
             <a class="btn btn-primary" data-bs-toggle="collapse" href="#showanswer" role="button">Show Answer</a>
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="#mynote" role="button">My Notes</a>
             <button type="submit" class="btn btn-primary">Save My Note</button>
+            
         </form> 
         <BR></BR> 
+        
         <div class="collapse" id="showanswer">
             {% if show_answer %}
             <p class="lead">   
