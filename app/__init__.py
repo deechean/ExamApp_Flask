@@ -13,7 +13,7 @@ admin_manager = Admin(template_mode="bootstrap3")
 user_manager = UserManager()
 mail = Mail()
 
-def create_app(config_name):
+def create_app(config_name="production"):
 	app = Flask(__name__)	
 	app.config.from_object(config[config_name])
 	config[config_name].init_app(app)	
